@@ -1,13 +1,420 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+ margin: 0;
+ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+ -webkit-font-smoothing: antialiased;
+ -moz-osx-font-smoothing: grayscale;
+ overflow: hidden; /* Prevents scrolling */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.home {
+ position: relative;
+ height: 100vh; /* Ensures home never gets taller than the viewport */
+}
+
+.navbar {
+ background-color: #131420; /* Light grey-white color */
+ border-bottom-width: 0; /* Removes the border */
+ width: 100%;
+ position: fixed;
+ top: 0;
+ left: 0;
+ padding: 1.25rem;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+}
+
+.logo {
+ display: flex;
+ align-items: center;
+}
+
+.tabs-container {
+ display: flex;
+ justify-content: space-between;
+}
+
+.tab-item {
+ color: #fff; /* White color for the text */
+ text-decoration: none; /* Removes the underline */
+ background-color: #bd822e; /* Dark grey color */
+ padding: 0.75rem 1rem; /* Adds padding */
+ border-radius: 5px; /* Rounds the corners */
+ transition: background-color 0.3s ease; /* Smooth transition */
+ margin-right: 1.5rem; /* Adds space to the right of each tab */
+ margin-left: 1.5rem; /* Adds space to the right of each tab */
+}
+
+.tab-item:hover {
+ background-color: #ddd; /* Light grey color on hover */
+ color: #000; /* Black color for the text when hovering over the container */
+}
+
+.dapp {
+ background-color: #bd822e;
+ color: #ffffff;
+ padding: 0.75rem 1rem; /* Adds padding */
+ border-radius: 5px; /* Rounds the corners */
+ transition: background-color 0.3s ease; /* Smooth transition */
+ margin-right: 2rem;
+ padding-top: 0.75rem;
+ padding-bottom: 0.75rem;
+}
+
+.dapp:hover{
+  background-color: #ddd;
+  color: black;
+}
+
+.main {
+ background-image: url('./assets/body_background.png');
+ display: flex;
+ min-height: 100vh;
+ flex-direction: column;
+ align-items: center;
+ justify-content: space-between;
+ padding: 6rem;
+}
+
+.body-container {
+ position: relative;
+ z-index: 10;
+ max-width: 96rem;
+ width: 100%;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+ font-size: .875rem;
+ line-height: 1.25rem;
+}
+
+.menu-container {
+ position: fixed;
+ bottom: 0;
+ left: 0;
+ display: flex;
+ height: 12rem;
+ width: 100%;
+ align-items: flex-end;
+ justify-content: center;
+}
+
+.pointer {
+ pointer-events: none;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 0.5rem;
+ padding: 2rem;
+}
+
+.transparent {
+ position: absolute;
+ top: 12rem;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background-color: transparent;
+}
+
+.transparent-container {
+color: #ffffff;
+ width: 100%;
+ max-width: 72rem;
+ padding-left: 1rem;
+ padding-right: 1rem;
+ margin-left: auto;
+ margin-right: auto;
+}
+
+.header2-text {
+ font-size: 1.875rem;
+ font-weight: bold;
+ text-align: center;
+}
+
+.paragraph-text {
+ font-size: 1.125rem;
+ text-align: center;
+}
+
+.box-body {
+ position: relative;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.box-body::before {
+ position: absolute;
+ height: 300px;
+ width: 480px;
+}
+
+.box-body::after {
+ position: absolute;
+ z-index: -20;
+ height: 180px;
+ width: 240px;
+}
+
+.box-container {
+ display: grid;
+ text-align: center;
+ margin-top: 0;
+ margin-bottom: 200px;
+}
+
+.select-box {
+ display: block;
+ border-radius: 0.5rem;
+ border: 1px solid #3e3e3e;
+ padding: 0; /* Removes padding from the box */
+ margin: 10px;
+ transition: all 0.15s ease-in-out;
+ text-decoration: none;
+ color: #ffffff;
+}
+
+.box-inner {
+ display: block;
+ padding: 1.25rem 1.5rem;
+}
+
+.box-inner:hover {
+ border-color: #d1d5db;
+ background-color: #f7fafc;
+}
+
+.box-inner:hover {
+ border-color: #9ca3af;
+ background-color: rgba(14, 16, 18, 0.1);
+}
+
+/* Add padding to the child elements */
+.select-box h2, .select-box p {
+ padding: 1.25rem 1.5rem;
+}
+
+.box-text {
+ margin-bottom: 0.75rem;
+ font-size: 1.5rem;
+ font-weight: 600;
+ text-align: center;
+}
+
+.box-text-transition {
+ display: inline-block;
+ transition: transform 0.15s ease-in-out;
+}
+
+.box-text-transition:hover {
+ transform: translateX(1rem);
+}
+
+.box-text-paragraph {
+ margin: 0;
+ max-width: 50ch;
+ font-size: 0.875rem;
+ opacity: 0.5;
+ text-align: center;
+}
+
+.box-text-transition:hover {
+ transform: translateX(1rem);
+}
+
+.footer {
+ background-color: #131420; /* Light grey-white color */
+ border-bottom-width: 0;
+ width: 100%;
+ position: fixed;
+ bottom: 0;
+ left: 0;
+ padding: 0.5rem;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.footer-paragraph {
+ text-align: center;
+ color: #ffffff;
+}
+
+
+/*
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////STAKE.JS
+/////////////////////////////////////////////////////////////////////////
+*/
+/* Header styling */
+.stake-navbar {
+  background-color: #131420; /* Background color for the entire navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem; /* Add some padding to the navbar */
+  width: 100%;
+}
+
+.header {
+  margin: 0; /* Remove any margins from the header */
+}
+
+.header-section-title{
+  color: #fff;
+}
+
+.section-title {
+  text-align: center; /* Center the title text */
+}
+
+.connect-wallet-btn {
+  position: absolute;
+  top: 1rem;
+  right: 6rem;
+  background-color: #f0ad4e;
+  color: #fff;
+  border: 1px solid darken(#f0ad4e, 5%);
+  border-radius: 10px;
+  padding: 15px 25px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.connect-wallet-btn:hover {
+  background-color: darken(#f0ad4e, 5%);
+}
+
+/* Button styling */
+.stake-btn,
+.stake-all-btn,
+.unstake-btn,
+.claim-btn {
+  background-color: #f0ad4e;
+  color: #fff;
+  border: 1px solid darken(#f0ad4e, 5%);
+  border-radius: 10px;
+  padding: 15px 25px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.stake-btn:hover,
+.stake-all-btn:hover,
+.unstake-btn:hover,
+.claim-btn:hover {
+  background-color: darken(#f0ad4e, 5%);
+}
+
+/* Input field styling */
+.stake-input {
+  border: 1px solid #f0ad4e;
+  border-radius: 10px;
+  padding: 15px;
+  font-weight: 500;
+  transition: border-color 0.2s ease;
+}
+
+.stake-input:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 5px rgba(66, 133, 244, 0.5);
+}
+
+/* Container styling (continued) */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  background-image: url('./assets/body_background.png');
+  flex: 1; /* This makes it take up all available space */
+  margin: 0;
+}
+
+.body-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Section styling */
+.stake-unstake-section {
+  margin-top: 5rem;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.stake-section,
+.unstake-section,
+.claim-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #f0ad4e;
+  border-radius: 10px;
+  background-color: #fff;
+  margin-bottom: 8rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.footer {
+ background-color: #131420; /* Light grey-white color */
+ border-bottom-width: 0;
+ width: 100%;
+ position: fixed;
+ bottom: 0;
+ left: 0;
+ padding: 0.5rem;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+
+.footer-paragraph {
+ text-align: center;
+ color: #ffffff;
+}
+
+@media (min-width: 1024px) {
+ .box-container {
+   max-width: 96rem;
+   width: 100%;
+   grid-template-columns: repeat(2, 1fr);
+   text-align: left;
+ }
+}
+
+@media (min-width: 1024px) {
+ .select-box:hover {
+   border-color: #9ca3af;
+   background-color: rgba(14, 16, 18, 0.1);
+ }
+}
+
+@media (prefers-reduced-motion: reduce) {
+ .box-text-transition {
+   transition: none !important;
+ }
+}
+
