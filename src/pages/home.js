@@ -1,25 +1,15 @@
-import logo from '../logo.svg'
 import React from 'react'
 import { Link } from 'react-router-dom';
+
+//imports
+import Navbar from '../components/navbar';
+import Footer from '../components/footer';
 
 function Home() {
   return (
     <div className="home">
       {/* Navbar */}
-      <nav className="navbar">
-      <div className="logo">
-          <img src={logo} alt="Logo" width={32} height={32} />
-        </div>
-        <div className="tabs-container">
-            <div>
-                <Link to="/" className="tab-item">Home</Link>
-            </div>
-            <div>
-                <Link to="/more" className="tab-item">More</Link>
-            </div>
-        </div>
-        <Link to="/stake" target="_blank"><button className="dapp">DApp</button></Link>
-      </nav>
+      <Navbar />
 
     {/* Main Content */}
     <main className="main">
@@ -58,9 +48,8 @@ function Home() {
       </div>
     </main>
 
-    <footer className="footer">
-      <p className="footer-paragraph">Staking Project Created For Your Eyes Only</p>
-    </footer>
+    {/* Footer */}
+    <Footer />
   </div>
   )
 }

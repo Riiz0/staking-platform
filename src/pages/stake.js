@@ -8,6 +8,9 @@ const stakingContractAddress = '';
 function Stake() {
    const [stakeAmount, setStakeAmount] = useState('');
    const [isLoading, setIsLoading] = useState(false);
+   const [totalStakedByUser, setTotalStakedByUser] = useState(0);
+   const [totalStakedInContract, setTotalStakedInContract] = useState(0);
+   const [accumulatedRewards, setAccumulatedRewards] = useState(0);
 
 const connectWallet = async () => {
  // Check if MetaMask is installed
@@ -77,13 +80,44 @@ const handleClaimAll = async () => {
  const stakingContract = await connectWallet();
 
  // Call the claim function on the contract
- const tx = await stakingContract.claimAll();
+ const tx = await stakingContract.claimRewards();
 
  // Wait for the transaction to be mined
  await tx.wait();
  setIsLoading(false);
 };
 
+const handleAccumulatedRewards = async () => {
+  setIsLoading(true);
+  const stakingContract = await connectWallet();
+
+   // Call the accumulatedRewards function on the contract
+  const rewards = await stakingContract.accumulatedRewards();
+
+  setAccumulatedRewards(rewards);
+  setIsLoading(false);
+ };
+
+ const handleGetTotalStakedByUser = async () => {
+  setIsLoading(true);
+  const stakingContract = await connectWallet();
+
+  // Call the totalStakedByUser function on the contract
+  const total = await stakingContract.totalStakedByUser();
+  setTotalStakedByUser(total);
+  setIsLoading(false);
+ };
+ 
+ const handleGetTotalStakedInContract = async () => {
+  setIsLoading(true);
+  const stakingContract = await connectWallet();
+
+  // Call the totalStakedInContract function on the contract
+  const total = await stakingContract.totalStakedInContract();
+  setTotalStakedInContract(total);
+  setIsLoading(false);
+ };
+ 
 return (
   <div className="main-container">
     <div className="stake-navbar">
@@ -127,6 +161,11 @@ return (
            Claim All Tokens
          </button>
        </div>
+        <div>
+          <h2>Total Staked By User: {totalStakedByUser}</h2>
+          <h2>Total Staked In Contract: {totalStakedInContract}</h2>
+          <h2>Accumulated Rewards: {accumulatedRewards}</h2>
+        </div>
      </div>
      <footer className="footer">
       <p className="footer-paragraph">Staking Project Created For Your Eyes Only</p>
