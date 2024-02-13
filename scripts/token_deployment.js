@@ -1,19 +1,29 @@
-import { ethers } from "hardhat";
+const { ethers } = require("hardhat");
 
 async function main() {
-  // Get the StakedToken contract factory
-  const StakedTokenFactory = await ethers.getContractFactory("StakedToken");
+  const [deployer] = await ethers.getSigners();
 
-  // Deploy the StakedToken contract
-  const stakedToken = await StakedTokenFactory.deploy();
-  await stakedToken.deployed();
+  console.log(
+  "Deploying contracts with the account:",
+  deployer.address
+  );
 
-  console.log("StakedToken deployed to:", stakedToken.address);
+  const StakingTokenFactory = await ethers.getContractFactory("SteelToken");
+
+  const initialSupply = ethers.parseEther("420690000000");
+
+  const stakingToken = await StakingTokenFactory.deploy(initialSupply);
+
+  await stakingToken.waitForDeployment();
+
+  console.log("SteelToken deployed to:", stakingToken.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main().catch((error) => {
+main()
+ .then(() => process.exit(0))
+ .catch((error) => {
     console.error(error);
-    process.exitCode = 1;
-  });
+    process.exit(1);
+ });

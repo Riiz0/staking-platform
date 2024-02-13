@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@metamask/logo": "^3.1.2",
     "@openzeppelin/contracts": "^5.0.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -21,10 +22,16 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
+    "env": {
+      "es2020": true,
+      "browser": true,
+      "node": true
+    },
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {}
   },
   "browserslist": {
     "production": [
@@ -39,6 +46,7 @@
     ]
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0"
+    "@nomicfoundation/hardhat-ethers": "^3.0.3",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0"
   }
 }
