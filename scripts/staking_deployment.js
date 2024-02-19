@@ -11,10 +11,16 @@ async function main() {
   const StakingContractFactory = await ethers.getContractFactory("StakingContract");
 
  // Replace these with the actual values
- const steelTokenAddress = "0xBCce7d3A6aBf4DFa205274DB22b171bA8E08C86b";
+ const tokenContract = "0x2B5A89c5Ab102117A5e8c76E06e7a72E51D1c500";
  const compensationWalletAddress = "0xfe63Ba8189215E5C975e73643b96066B6aD41A45";
+ const annualPercentageYield =  8; // Annual percentage yield (APY) for the rewards
 
- const stakingContract = await StakingContractFactory.deploy(steelTokenAddress, deployer.address, compensationWalletAddress);
+ const stakingContract = await StakingContractFactory.deploy(
+  tokenContract, 
+  deployer.address, 
+  compensationWalletAddress,
+  annualPercentageYield
+  );
 
   await stakingContract.waitForDeployment();
 

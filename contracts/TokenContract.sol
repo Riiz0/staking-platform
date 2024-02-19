@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
-contract SteelToken is ERC20, Ownable, ERC20Burnable {
-    constructor(uint256 initialSupply) ERC20("Steel Token", "STEL") Ownable(msg.sender) {
+contract TokenContract is ERC20, Ownable, ERC20Burnable {
+    constructor(uint256 initialSupply) ERC20("Great Value Token", "GVTK") Ownable(msg.sender) {
         _mint(msg.sender, initialSupply);
     }
 

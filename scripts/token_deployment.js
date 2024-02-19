@@ -8,7 +8,7 @@ async function main() {
   deployer.address
   );
 
-  const StakingTokenFactory = await ethers.getContractFactory("SteelToken");
+  const StakingTokenFactory = await ethers.getContractFactory("TokenContract");
 
   const initialSupply = ethers.parseEther("420690000000");
 
@@ -16,7 +16,7 @@ async function main() {
 
   await stakingToken.waitForDeployment();
 
-  console.log("SteelToken deployed to:", stakingToken.target);
+  console.log("TokenContract deployed to:", stakingToken.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
