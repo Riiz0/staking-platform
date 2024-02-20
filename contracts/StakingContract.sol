@@ -38,10 +38,22 @@ contract StakingContract is Ownable, Pausable, ReentrancyGuard {
         // Check if the grace period has passed since the last unstake
         require(block.timestamp >= lastUnstakeTime[msg.sender] + GRACE_PERIOD, "Must wait the grace period before staking again");
 
+        // Calculate the rewards up to this point
+        uint256 reward = calculateReward(msg.sender);
+
+        // Update the reward balance with the accumulated reward
+        rewardBalance[msg.sender] += reward;
+        totalRewards += reward;
+
+        // Add the new staking amount to the user's staking balance
         stakingBalance[msg.sender] += _amount;
         totalStaked += _amount;
+
+        // Update the staking time to the current block timestamp
         stakingTime[msg.sender] = block.timestamp;
+
         tokenContract.safeTransferFrom(msg.sender, address(this), _amount);
+
         emit Staked(msg.sender, _amount);
     }
 
@@ -56,26 +68,24 @@ contract StakingContract is Ownable, Pausable, ReentrancyGuard {
         totalRewards += reward;
 
         // Calculate fees and amounts as before, but without affecting the rewards
-        uint256 fee = amount *  6 /  100; // Calculate the  6% fee
-        uint256 burnAmount = fee /  2; //  3% of the fee to be burned
-        uint256 ownerAmount = fee - burnAmount; // The other  3% to be sent to the owner
+        uint256 fee = amount *  8 /  100; // Calculate the  8% fee
+        uint256 burnAmount = fee /  2; //  4% of the fee to be burned
+        uint256 ownerAmount = fee - burnAmount; // The other  4% to be sent to the owner
         uint256 netAmount = amount - fee; // Net amount after subtracting the fee
 
-        // Burn half of the fee
         TokenContract(address(tokenContract)).burnTokens(address(this), burnAmount);
-
-        // Transfer the other half to the owner
         tokenContract.safeTransfer(compensationWallet, ownerAmount);
-
-        // Transfer the net amount back to the user
         tokenContract.safeTransfer(msg.sender, netAmount);
 
         // Record the current timestamp as the last unstake time
         lastUnstakeTime[msg.sender] = block.timestamp;
-        
+
         // Reduce the staking balance and total staked amount
         stakingBalance[msg.sender] =  0;
         totalStaked -= amount;
+
+        // Reset the staking time for the user
+        stakingTime[msg.sender] = block.timestamp;
 
         emit Unstake(msg.sender, amount);
     }

@@ -6,8 +6,8 @@ import MetamaskLogo from '../components/metamaskLogo';
 import LoadingScreen from '../components/loadingScreen';
 
 // Contract addresses
-const tokenContractAddress = '0x2B5A89c5Ab102117A5e8c76E06e7a72E51D1c500';
-const stakingContractAddress = '0x3c9ef7E87e6DD227bCCb36526B4F589033883248';
+const tokenContractAddress = '0x6936C261bF7edF969D06557cB85b7D19E5d43210';
+const stakingContractAddress = '0x0e3f1495d0eA93F440bD2899FC2b5cef70FDb155';
 const TOKEN_DECIMALS =  18;
 
 function Stake() {
@@ -23,7 +23,7 @@ function Stake() {
   const [transactionType, setTransactionType] = useState('');
   const [isLoading, setIsLoading] = useState(false); // New state variable for loading screen
 
-  const apy =  8;
+  const apy =  4;
 
   // Connect to the Ethereum provider and get signer
   const connectWallet = async () => {
@@ -52,6 +52,7 @@ function Stake() {
     setIsLoading(true);
     if (!signer || !stakingContract || !TokenContract) return;
 
+    try {
     // Approve the staking contract to spend the user's tokens
     const approveTx = await TokenContract.approve(stakingContractAddress, ethers.parseUnits(stakeAmount, TOKEN_DECIMALS));
     await approveTx.wait();
@@ -61,6 +62,11 @@ function Stake() {
     const stakeTx = await stakingContract.stake(ethers.parseUnits(stakeAmount, TOKEN_DECIMALS));
     await stakeTx.wait();
 
+    // Clear the stake amount input
+    setStakeAmount(''); // Clear the input field
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
     setIsLoading(false); // Transaction failed, stop loading
     setTransactionType('');
   };
@@ -108,6 +114,7 @@ function Stake() {
       const unstakeTx = await stakingContract.unstake();
       await unstakeTx.wait();
 
+      setTransactionType('Processing ClaimRewards transaction...');
       // Call the claimReward function on the staking contract
       const claimTx = await stakingContract.claimReward();
       await claimTx.wait();
@@ -170,7 +177,7 @@ function Stake() {
     let pendingRewardsWei;
     if (stakedBalance >  0) {
       // User is still staking, calculate pending rewards
-      pendingRewardsWei = await stakingContract.calculateReward(signer.getAddress());
+      pendingRewardsWei = await stakingContract.calculateReward(signer.getAddress()) + await stakingContract.rewardBalance(signer.getAddress());
     } else {
       // User has unstaked, display reward balance
       pendingRewardsWei = await stakingContract.rewardBalance(signer.getAddress());
@@ -181,7 +188,7 @@ function Stake() {
     setStakedBalance(stakedBalance);
     setStakingDuration(stakingDurationDays);
     setUnclaimedRewards(pendingRewards);
-    setTimeout(fetchUserStakingInfo,   5000); // Update every   5 seconds
+    setTimeout(fetchUserStakingInfo,   8000); // Update every   5 seconds
   };
 
   // Call this function when the user connects their wallet or when necessary
@@ -227,7 +234,7 @@ function Stake() {
               <h2 className="section-title">Your Staking Information</h2>
               <ul>
                 <li><strong>Staked Balance:</strong> {stakedBalance}</li>
-                <li><strong>Current APY:</strong> {apy}%</li>
+                <li><strong>Staking APY:</strong> {apy}%</li>
                 <li><strong>Staking Duration:</strong> {Math.round(stakingDuration)} days</li>
                 <li><strong>Unclaimed Rewards:</strong> {unclaimedRewards}</li>
             </ul>
