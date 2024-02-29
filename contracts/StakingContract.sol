@@ -68,9 +68,9 @@ contract StakingContract is Ownable, Pausable, ReentrancyGuard {
         totalRewards += reward;
 
         // Calculate fees and amounts as before, but without affecting the rewards
-        uint256 fee = amount *  8 /  100; // Calculate the  8% fee
-        uint256 burnAmount = fee /  2; //  4% of the fee to be burned
-        uint256 ownerAmount = fee - burnAmount; // The other  4% to be sent to the owner
+        uint256 fee = amount *  12 /  100; // Calculate the  12% fee
+        uint256 burnAmount = fee /  6; //  6% of the fee to be burned
+        uint256 ownerAmount = fee - burnAmount; // The other  6% to be sent to the owner
         uint256 netAmount = amount - fee; // Net amount after subtracting the fee
 
         TokenContract(address(tokenContract)).burnTokens(address(this), burnAmount);

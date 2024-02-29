@@ -6,8 +6,8 @@ import MetamaskLogo from '../components/metamaskLogo';
 import LoadingScreen from '../components/loadingScreen';
 
 // Contract addresses
-const tokenContractAddress = '0x6936C261bF7edF969D06557cB85b7D19E5d43210';
-const stakingContractAddress = '0x0e3f1495d0eA93F440bD2899FC2b5cef70FDb155';
+const tokenContractAddress = "0x762eC64F29ec4029dA4Aca06E36914C0FF6D37Ca";
+const stakingContractAddress = "0xFe2Fe62DCee8cb11ab4ba0b7E0204576f2A12E57";
 const TOKEN_DECIMALS =  18;
 
 function Stake() {
@@ -23,12 +23,13 @@ function Stake() {
   const [transactionType, setTransactionType] = useState('');
   const [isLoading, setIsLoading] = useState(false); // New state variable for loading screen
 
-  const apy =  4;
+  const apy =  2;
 
   // Connect to the Ethereum provider and get signer
   const connectWallet = async () => {
-    if (window.ethereum) {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    try {
+      if (window.ethereum) {
+     await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       setProvider(provider);
@@ -40,9 +41,32 @@ function Stake() {
       setTokenContract(tokenContract);
       setStakingContract(stakingContract);
       setIsConnected(true);
-    } else {
-      alert('Please install MetaMask!');
+
+    // Listen for account changes
+    window.ethereum.on('accountsChanged', async (accounts) => {
+      if (accounts.length === 0) {
+      console.log('Please connect to MetaMask.');
       setIsConnected(false);
+      } else {
+      // Handle account change, e.g., by resetting state and re-initializing contract instances
+      const newSigner = await provider.getSigner();
+      setSigner(newSigner);
+      // Re-initialize contract instances with the new signer
+      const tokenContract = new ethers.Contract(tokenContractAddress, TokenContractABI, newSigner);
+      const stakingContract = new ethers.Contract(stakingContractAddress, stakingContractABI, newSigner);
+      setTokenContract(tokenContract);
+      setStakingContract(stakingContract);
+    }
+    });
+      } else {
+        alert('Please install MetaMask!');
+        setIsConnected(false);
+      }
+        } catch (error) {
+          console.error("Failed to connect:", error);
+          setIsConnected(false);
+        } finally {
+      setIsLoading(false); // End loading
     }
   };
 
@@ -63,7 +87,7 @@ function Stake() {
     await stakeTx.wait();
 
     // Clear the stake amount input
-    setStakeAmount(''); // Clear the input field
+    setStakeAmount(""); // Clear the input field
     } catch (error) {
       console.error("Transaction failed: ", error);
     }

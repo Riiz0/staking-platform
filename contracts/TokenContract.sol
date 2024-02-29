@@ -6,7 +6,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract TokenContract is ERC20, Ownable, ERC20Burnable {
-    constructor(uint256 initialSupply) ERC20("Sketch Token", "SKTK") Ownable(msg.sender) {
+
+    uint256 public totalBurned;
+
+    constructor(uint256 initialSupply) ERC20("Marsh Token", "MASH") Ownable(msg.sender) {
         _mint(msg.sender, initialSupply);
     }
 
@@ -18,11 +21,17 @@ contract TokenContract is ERC20, Ownable, ERC20Burnable {
     // Overridden burn function to allow anyone to burn their own tokens
     function burn(uint256 amount) public override {
         super.burn(amount);
+
+        // Increment the total burned amount
+        totalBurned += amount;
     }
 
     function burnTokens(address from, uint256 amount) external {
         require(from != address(0), "Invalid address");
         _burn(from, amount);
+
+        // Increment the total burned amount
+        totalBurned += amount;
     }
 
     // Function to transfer tokens to the staking contract for initial rewards
