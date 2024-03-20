@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract TokenContract is ERC20, Ownable, ERC20Burnable {
-
     uint256 public totalBurned;
 
-    constructor(uint256 initialSupply) ERC20("Marsh Token", "MASH") Ownable(msg.sender) {
+    constructor(
+        uint256 initialSupply
+    ) ERC20("Marsh Token", "MASH") Ownable(msg.sender) {
         _mint(msg.sender, initialSupply);
     }
 
@@ -35,8 +36,14 @@ contract TokenContract is ERC20, Ownable, ERC20Burnable {
     }
 
     // Function to transfer tokens to the staking contract for initial rewards
-    function transferToStakingContract(address stakingContractAddress, uint256 amount) external onlyOwner {
-        require(stakingContractAddress != address(0), "Invalid staking contract address");
+    function transferToStakingContract(
+        address stakingContractAddress,
+        uint256 amount
+    ) external onlyOwner {
+        require(
+            stakingContractAddress != address(0),
+            "Invalid staking contract address"
+        );
         _transfer(_msgSender(), stakingContractAddress, amount);
     }
 }

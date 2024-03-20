@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { stakingContractABI } from '../abis/staking_abi';
 import { TokenContractABI } from '../abis/token_abi';
+import { TokenDistributorABI } from '../abis/tokenDistributor_abi';
 import MetamaskLogo from '../components/metamaskLogo';
 import LoadingScreen from '../components/loadingScreen';
 
 // Contract addresses
 const tokenContractAddress = "0x762eC64F29ec4029dA4Aca06E36914C0FF6D37Ca";
 const stakingContractAddress = "0xFe2Fe62DCee8cb11ab4ba0b7E0204576f2A12E57";
+const tokenDistributorAddress = "0xF35D90FD2f2e5f12E0895a919F6150323D703175";
 const TOKEN_DECIMALS =  18;
 
 function Stake() {
@@ -21,7 +23,7 @@ function Stake() {
   const [stakingDuration, setStakingDuration] = useState(0);
   const [unclaimedRewards, setUnclaimedRewards] = useState(0);
   const [transactionType, setTransactionType] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // New state variable for loading screen
+  const [isLoading, setIsLoading] = useState(false);
 
   const apy =  2;
 
@@ -38,8 +40,24 @@ function Stake() {
       // Initialize contract instances
       const tokenContract = new ethers.Contract(tokenContractAddress, TokenContractABI, signer);
       const stakingContract = new ethers.Contract(stakingContractAddress, stakingContractABI, signer);
+      const tokenDistributor = new ethers.Contract(tokenDistributorAddress, TokenDistributorABI, signer);
       setTokenContract(tokenContract);
       setStakingContract(stakingContract);
+
+      // Attempt to distribute tokens to the new user
+      const userAddress = await signer.getAddress();
+      try {
+        setTransactionType('Sending you free tokens...');
+        setIsLoading(true); // Start loading
+
+        // Call the distributeTokens function on the TokenDistributor contract
+        await tokenDistributor.distributeTokens(userAddress);
+      } catch (error) {
+        console.error("Failed to distribute tokens:", error);
+      } finally {
+        setIsLoading(false); // End loading
+      }
+
       setIsConnected(true);
 
     // Listen for account changes
@@ -177,42 +195,59 @@ function Stake() {
   const fetchUserStakingInfo = async () => {
     if (!signer || !stakingContract || !TokenContract) return;
   
-    // Fetch user's staked balance
-    const stakedBalanceWei = await stakingContract.stakingBalance(signer.getAddress());
-    const stakedBalance = ethers.formatUnits(stakedBalanceWei, TOKEN_DECIMALS);
+    try {
+      // Fetch user's staked balance
+      const stakedBalanceWei = await stakingContract.stakingBalance(signer.getAddress());
+      const stakedBalance = ethers.formatUnits(stakedBalanceWei, TOKEN_DECIMALS);
   
-    // Fetch user's last update time from the public mapping
-    const lastUpdateTime = await stakingContract.stakingTime(signer.getAddress());
-
-    // Initialize staking duration to  0
-    let stakingDurationDays =  0;
-
-    // Only calculate staking duration if the user has staked before
-    if (BigInt(lastUpdateTime) > BigInt(0)) {
-    // Get the block timestamp as a BigInt
-    const blockTimestamp = await provider.getBlock().then(block => BigInt(block.timestamp));
-
-    // Calculate staking duration
-    const durationSeconds = blockTimestamp - BigInt(lastUpdateTime);
-    stakingDurationDays = Number(durationSeconds) / (60 *   60 *   24); // Convert seconds to days
-  }
-
-    // Fetch user's pending rewards
-    let pendingRewardsWei;
-    if (stakedBalance >  0) {
-      // User is still staking, calculate pending rewards
-      pendingRewardsWei = await stakingContract.calculateReward(signer.getAddress()) + await stakingContract.rewardBalance(signer.getAddress());
-    } else {
-      // User has unstaked, display reward balance
-      pendingRewardsWei = await stakingContract.rewardBalance(signer.getAddress());
-    }
-    const pendingRewards = ethers.formatUnits(pendingRewardsWei, TOKEN_DECIMALS);
-
-    // Update state with the fetched information
-    setStakedBalance(stakedBalance);
-    setStakingDuration(stakingDurationDays);
-    setUnclaimedRewards(pendingRewards);
-    setTimeout(fetchUserStakingInfo,   8000); // Update every   5 seconds
+      // Check if the user has staked before proceeding
+      if (stakedBalance > 0) {
+        // Fetch user's last update time from the public mapping
+        const lastUpdateTime = await stakingContract.stakingTime(signer.getAddress());
+  
+        // Initialize staking duration to 0
+        let stakingDurationDays = 0;
+  
+        // Only calculate staking duration if the user has staked before
+        if (BigInt(lastUpdateTime) > BigInt(0)) {
+          // Get the block timestamp as a BigInt
+          const blockTimestamp = await provider.getBlock().then(block => BigInt(block.timestamp));
+  
+          // Calculate staking duration
+          const durationSeconds = blockTimestamp - BigInt(lastUpdateTime);
+          stakingDurationDays = Number(durationSeconds) / (60 * 60 * 24); // Convert seconds to days
+        }
+  
+        // Fetch user's pending rewards
+        let pendingRewardsWei;
+        if (stakedBalance > 0) {
+          // User is still staking, calculate pending rewards
+          pendingRewardsWei = await stakingContract.calculateReward(signer.getAddress()) + await stakingContract.rewardBalance(signer.getAddress());
+        } else {
+          // User has unstaked, display reward balance
+          pendingRewardsWei = await stakingContract.rewardBalance(signer.getAddress());
+        }
+        const pendingRewards = ethers.formatUnits(pendingRewardsWei, TOKEN_DECIMALS);
+  
+        // Update state with the fetched information
+        setStakedBalance(stakedBalance);
+        setStakingDuration(stakingDurationDays);
+        setUnclaimedRewards(pendingRewards);
+      } else {
+        // User hasn't staked yet, reset staking info
+        setStakedBalance(0);
+        setStakingDuration(0);
+        setUnclaimedRewards(0);
+      }
+   } catch (error) {
+      console.error("Failed to fetch staking balance:", error);
+      // Reset staking info in case of error
+      setStakedBalance(0);
+      setStakingDuration(0);
+      setUnclaimedRewards(0);
+   }
+  
+   setTimeout(fetchUserStakingInfo, 8000); // Update every 8 seconds
   };
 
   // Call this function when the user connects their wallet or when necessary
