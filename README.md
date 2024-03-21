@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# Project Overview
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Project Name: MARSH Staking Platform
 
-## Available Scripts
+Language: Solidity (for smart contracts), JavaScript (for frontend)
 
-In the project directory, you can run:
+What it does: A decentralized application (DApp) that allows users to stake tokens, earn rewards.
 
-### `npm start`
+Why it's useful: Provides a transparent and secure way for users to stake their tokens, earn rewards, and participate in the network.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Contracts Overview
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `TokenContract`
 
-### `npm test`
+**Purpose:** Manages the creation, distribution, and burning of Marsh Tokens (MASH).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Features:**
 
-### `npm run build`
+- Minting: Allows the contract owner to mint new tokens.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Burning: Enables users to burn their own tokens and also provides a function for the contract owner to burn tokens on behalf of users.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Transfer to Staking Contract: Facilitates the transfer of tokens to the staking contract for initial rewards.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- ERC20 Compliance: Complies with the ERC20 standard, ensuring compatibility with Ethereum wallets and other ERC20 tokens.
 
-### `npm run eject`
+- Burnable: Utilizes the ERC20Burnable extension from OpenZeppelin, allowing tokens to be permanently removed from circulation.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### `StakingContract`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Purpose:** Enables users to stake tokens and earn rewards based on the staking duration and the project's annual percentage yield (APY).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Features:**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Staking: Users can stake their tokens to earn rewards.
 
-## Learn More
+- Unstaking: Users can unstake their tokens and receive a portion of their staked tokens back, along with any earned rewards.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Reward Claiming: Users can claim their earned rewards at any time.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Grace Period: A grace period is enforced to prevent users from staking immediately after unstaking, encouraging longer-term staking.
 
-### Code Splitting
+- Fee and Burn Mechanism: A 12% fee is applied to unstaked tokens, with 6% burned and 6% sent to a compensation wallet.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Pausable and Ownable: The contract is pausable by the owner, providing an additional layer of control over the staking process.
 
-### Analyzing the Bundle Size
+### `TokenDistributorContract`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Purpose:** Automatically distributes tokens to new users upon connection to the DApp.
 
-### Making a Progressive Web App
+**Features:**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Token Distribution: Automatically distributes 5000 tokens to new users upon connection to the DApp.
 
-### Advanced Configuration
+- Tracking Distribution Status: Uses a mapping to track whether a user has already received tokens.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### `Getting Started`
 
-### Deployment
+1. Prerequisites: Ensure you have MetaMask installed and set up.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+2. Installation: No installation required for the frontend. For the smart contracts, clone the repository and use Truffle or Hardhat for deployment.
 
-### `npm run build` fails to minify
+3. Accessing the DApp: Visit the deployed DApp URL to start using the application.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Link: [MARSH Staking Platform](https://staking-platform-seven.vercel.app/).
+
+### `Usage`
+
+- Connecting Wallet: Click on the "Connect Wallet" button to connect your MetaMask wallet to the DApp.
+
+- Staking Tokens: Enter the amount of tokens you wish to stake and select the staking duration. Click "Stake Tokens" to initiate the staking process.
+
+- Claiming Rewards: Once your staking period is over, you can claim your rewards by clicking on the "Claim Rewards" button.
+
+## Limitations
+
+- Token Distribution: Tokens are distributed only once per user. Subsequent connections will not trigger a new distribution.
+
+- Staking Duration: The staking duration will be set to your most recent stake so, if you stake tokens and stake again without claiming the staking duration will be set to the second staking duration and start from that timestamp until you unstake or restake. unClaimed Rewards will be mapped to the users address so, if the user stakes and restakes over and over again the unclaimed rewards will reset because the staking duration reset, but all unclaimed rewards will be saved in a mapping of the users address, so when a user unstakes all they will receive all the unclaimed tokens from the times they kept on restaking without claiming.
+
+### `Contributing`
+
+If you're interested in contributing to the project, please fork the repository, make your changes, and submit a pull request. I welcome all contributions that improve the project.
+
+### `Support`
+
+For any issues or questions, please open an issue on the GitHub repository. I'll be here to help!
+
+### `Acknowledgments`
+
+- Special thanks to the Ethereum and Solidity communities for their support and resources.
